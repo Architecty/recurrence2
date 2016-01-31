@@ -125,7 +125,7 @@
 
     void deactivateTile(GameObject tile)
     {
-        if(tile.name == "Start")
+        if(tile.tag == "start")
         {
             tileList[0] = new GameObject();
         }
@@ -153,5 +153,10 @@
             }
         }
         return 0;
+    }
+
+    public void failedLevel()
+    {
+        Application.LoadLevel("Failed Animation");
     }
 }
