@@ -46,6 +46,24 @@ public class Player : MonoBehaviour {
 				Quaternion.LookRotation(faceforward)) as GameObject;
 			Inventory.Instance().SetItem(idx, usingItem);
 			state = State.Flying;
+			return true;
+		}
+		if (item.type == Item.Type.Ruler) {
+			Item it2 = itemInFront();
+			if (it2.type == Item.Type.Test) {
+				GameObject.Instantiate(paperplane, it2.transform.position, it2.transform.rotation);
+				Destroy(it2);
+				return true;
+			}
+		}
+		if (item.type == Item.Type.Pencil) {
+			Item it2 = itemInFront();
+			if (it2.type == Item.Type.Test) {
+				// start scribble noise
+				state = State.Dead;
+				Inventory.Instance().Fade(false);
+				return true;
+			}
 		}
 		Inventory.Instance().DropItem(idx);
 		return false;
