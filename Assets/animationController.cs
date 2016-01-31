@@ -33,6 +33,7 @@ public class animationController : MonoBehaviour {
         Animation3.SetActive(true);
         yield return new WaitForSeconds(15);
         Animation3.SetActive(false);
+        Application.LoadLevel("Main Game");
     }
 
     IEnumerator fadeOut()
