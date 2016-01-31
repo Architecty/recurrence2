@@ -154,6 +154,7 @@ public class Player : MonoBehaviour {
 	{
 		state = State.None;
 		Debug.Log("The End ...?");
+		Inventory.Instance().Fade(true,10F);
 		tileManager tm = tileManager.Instance();
 		tm.failedLevel();
 	}
