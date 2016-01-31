@@ -4,6 +4,13 @@
 
     public class tileManager : MonoBehaviour {
 
+	private static tileManager instance = null;
+
+	public static tileManager Instance()
+	{
+		return instance;
+	}
+
     public GameObject playerController;
     private Camera playerCamera;
 
@@ -28,7 +35,13 @@
     //The current stage you're in. This informs the system regarding which tile to put next.
     public int currentTile = 0;
 
-    // Use this for initialization
+	void Awake()
+	{
+		// Currently no protection against multiple tileManagers
+		instance = this;
+	}
+
+	// Use this for initialization
     void Start () {
         initializeVariables();
         createNextTiles(startTile);
