@@ -22,7 +22,7 @@ public class Inventory : MonoBehaviour {
 			Destroy(gameObject);
 		} else {
 			instance = this;
-			DontDestroyOnLoad(gameObject);
+			//DontDestroyOnLoad(gameObject);
 		}
 	}
 
