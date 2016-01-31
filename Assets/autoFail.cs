@@ -9,7 +9,7 @@ public class autoFail : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void OnTriggeEnter () {
+	void OnTriggerEnter () {
         Application.LoadLevel("Failed Animation");
 	}
 }
