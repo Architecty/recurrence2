@@ -59,29 +59,43 @@ public class Inventory : MonoBehaviour {
 	{
 		if ((i<0) || (i>=items.Count))
 			return;
-		GameObject player = GameObject.FindGameObjectWithTag("GameController");
-		if (player == null) {
-			Debug.Log("Couldn't find player");
-			return;
-		}
+		GameObject player = Player.GetPlayer().gameObject;
 		GameObject obj = items[i];
 		items.RemoveAt(i);
 		obj.gameObject.SetActive(true);
 		obj.gameObject.transform.position = player.transform.position + player.transform.TransformDirection(Vector3.forward);
+		updateButtons();
 	}
 
-	public void UseItem(int i)
+	public Item GetItem(int i)
 	{
 		if ((i<0) || (i>=items.Count))
-			return;
+			return null;
 		GameObject obj = items[i];
 
-		Item item = ItemFromGameObject(obj);
+		return ItemFromGameObject(obj);
+	}
+
+	// Use only for replacing item
+	public void SetItem(int i, GameObject item)
+	{
+		items[i] = item;
+		updateButtons();
+	}
+
+	public void RemoveItem(GameObject item)
+	{
+		items.Remove(item);
+		updateButtons();
+	}
+
+	public bool UseItem(int i)
+	{
+		Item item = GetItem(i);
 		if (item == null) {
-			Debug.Log("No Item found in " + obj.name);
-			return;
+			return false;
 		}
-		item.use();
+		return item.use(i);
 	}
 
 	public void updateButtons()
