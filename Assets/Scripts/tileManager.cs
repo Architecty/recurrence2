@@ -119,7 +119,8 @@
         //If we've entered a 'choice' tile, then stop progression until we've done it right
         if (centerTile.tag == "Choice")
         {
-            canProgress = false;
+            //Commented out to allow straight runthroughs
+            //canProgress = false;
         }
     }
 
