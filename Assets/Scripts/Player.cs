@@ -40,9 +40,10 @@ public class Player : MonoBehaviour {
 	public bool useItem(Item item, int idx)
 	{
 		if ((state == State.Falling) && (item.type == Item.Type.Backpack)) {
-			FPController.enabled = false;
-			usingItem = GameObject.Instantiate(parachute, transform.position + Vector3.up,
-				Quaternion.Euler(transform.eulerAngles)) as GameObject;
+			Debug.Log("Flying");
+			FPController.enabled = true;
+			usingItem = GameObject.Instantiate(parachute, transform.position,
+				Quaternion.LookRotation(faceforward)) as GameObject;
 			Inventory.Instance().SetItem(idx, usingItem);
 			state = State.Flying;
 		}
@@ -57,7 +58,7 @@ public class Player : MonoBehaviour {
 			// Debug.Log("vert speed: " + rbody.velocity.y);
 			if (rbody.velocity.y < -fallspeed) {
 				state = State.Falling;
-				faceforward = transform.forward;
+				faceforward = Vector3.Cross(transform.right, Vector3.up);
 				FPController.enabled = false;
 			}
 			break;
@@ -75,6 +76,7 @@ public class Player : MonoBehaviour {
 			rbody.transform.position = usingItem.transform.position + Vector3.down;
 			transform.rotation = Quaternion.Slerp(transform.rotation, usingItem.transform.rotation, Time.deltaTime * camturnspeed);
 			if (transform.position.y < (groundlevel + 1F)) {
+				Debug.Log("Landed");
 				state = State.None;
 				FPController.enabled = true;
 				Inventory.Instance().RemoveItem(usingItem);
