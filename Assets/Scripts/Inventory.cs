@@ -9,6 +9,7 @@ public class Inventory : MonoBehaviour {
 	public GameObject panel;
 
 	private static Inventory instance = null;
+	public Image FaderImage = null;
 
 	public static Inventory Instance()
 	{
@@ -102,6 +103,20 @@ public class Inventory : MonoBehaviour {
 		}
 	}
 
+	private float fadespeed = 0.5F;
+	private Color FadeColor;
+
+	public void Fade(bool up, float speed = 0.5F)
+	{
+		if (FaderImage == null)
+			return;
+		FadeColor = up ? Color.clear : Color.black;
+//		fadespeed = Mathf.Abs(speed);
+//		if (up)
+//			fadespeed = -fadespeed;
+		FaderImage.color = Color.Lerp(FaderImage.color, FadeColor, 0.02F);
+	}
+
 	// Use this for initialization
 	void Start () {
 		updateButtons();
@@ -109,6 +124,7 @@ public class Inventory : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if ((FaderImage.color.a >= 0.01) && (FaderImage.color.a <= 0.99))
+			FaderImage.color = Color.Lerp(FaderImage.color, FadeColor, fadespeed * Time.deltaTime);
 	}
 }

@@ -13,12 +13,16 @@ public class Player : MonoBehaviour {
 			if ((c >= '1') && (c <= '6')) {
 				Inventory.Instance().DropItem(c - '1');
 			}
+			if (c == 'q')
+				Inventory.Instance().Fade(false);
+			if (c == 'e')
+				Inventory.Instance().Fade(true);
 		}
 		if (Input.GetMouseButtonDown(0)) {
-			Debug.Log("Mouse pressed");
+			// Debug.Log("Mouse pressed");
 			RaycastHit hit;
 			if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 3.0F)) {
-				Debug.Log("Found object: " + hit.collider.gameObject.name);
+				// Debug.Log("Found object: " + hit.collider.gameObject.name);
 				Item item = Inventory.ItemFromGameObject(hit.collider.gameObject);
 				if (item != null) {
 					Inventory.Instance().AddItem(item.gameObject);
