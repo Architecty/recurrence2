@@ -91,7 +91,7 @@ public class Player : MonoBehaviour {
 			}
 			break;
 		case State.Flying:
-			rbody.transform.position = usingItem.transform.position + Vector3.down;
+			rbody.transform.position = usingItem.transform.position;
 			transform.rotation = Quaternion.Slerp(transform.rotation, usingItem.transform.rotation, Time.deltaTime * camturnspeed);
 			if (transform.position.y < (groundlevel + 1F)) {
 				Debug.Log("Landed");
