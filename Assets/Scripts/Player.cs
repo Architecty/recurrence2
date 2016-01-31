@@ -40,6 +40,7 @@ public class Player : MonoBehaviour {
 		if ((rbody == null)&&(FPController != null)) {
 			rbody = FPController.gameObject.GetComponent<Rigidbody>();
 		}
+		Inventory.Instance().Fade(true);
 	}
 
 	public bool useItem(Item item, int idx)
@@ -81,8 +82,10 @@ public class Player : MonoBehaviour {
 	void playaudio(int clipidx)
 	{
 		AudioSource audio = GetComponent<AudioSource>();
-		if (clipidx < 0)
+		if (clipidx < 0) {
 			audio.Stop();
+			return;
+		}
 		audio.clip = sounds[clipidx];
 		audio.loop = soundloops[clipidx];
 		audio.Play();
@@ -149,6 +152,7 @@ public class Player : MonoBehaviour {
 
 	public void ToEnd()
 	{
+		state = State.None;
 		Debug.Log("The End ...?");
 		tileManager tm = tileManager.Instance();
 		tm.failedLevel();
