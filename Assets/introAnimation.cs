@@ -26,7 +26,7 @@ public class introAnimation : MonoBehaviour
         Animation2.SetActive(true);
         yield return new WaitForSeconds(5);
         Animation2.SetActive(false);
-        yield return new WaitForSeconds(15);
-      //  Application.LoadLevel("Main Game");
+        yield return new WaitForSeconds(1);
+        Application.LoadLevel("Main Game");
     }
 }
