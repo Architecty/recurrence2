@@ -23,6 +23,10 @@ public class Player : MonoBehaviour {
 	public float fallspeed = 8F;
 	public float camturnspeed = 1F;
 
+	// 0 = windnoise, 1 = parachute, 2 = scribbling, 3 = folding
+	public AudioClip[] sounds;
+	public bool[] soundloops;
+
 	private Vector3 faceforward;
 
 	public static Player GetPlayer()
@@ -46,13 +50,15 @@ public class Player : MonoBehaviour {
 				Quaternion.LookRotation(faceforward)) as GameObject;
 			Inventory.Instance().SetItem(idx, usingItem);
 			state = State.Flying;
+			playaudio(1);
 			return true;
 		}
 		if (item.type == Item.Type.Ruler) {
 			Item it2 = itemInFront();
 			if (it2.type == Item.Type.Test) {
+				playaudio(3);
 				GameObject.Instantiate(paperplane, it2.transform.position, it2.transform.rotation);
-				Destroy(it2);
+				Destroy(it2.gameObject);
 				return true;
 			}
 		}
@@ -62,11 +68,23 @@ public class Player : MonoBehaviour {
 				// start scribble noise
 				state = State.Dead;
 				Inventory.Instance().Fade(false);
+				playaudio(2);
 				return true;
 			}
 		}
 		Inventory.Instance().DropItem(idx);
 		return false;
+	}
+
+	// clipidx -1 mean stop playing
+	void playaudio(int clipidx)
+	{
+		AudioSource audio = GetComponent<AudioSource>();
+		if (clipidx < 0)
+			audio.Stop();
+		audio.clip = sounds[clipidx];
+		audio.loop = soundloops[clipidx];
+		audio.Play();
 	}
 
 	void updateState()
@@ -78,6 +96,7 @@ public class Player : MonoBehaviour {
 				state = State.Falling;
 				faceforward = Vector3.Cross(transform.right, Vector3.up);
 				FPController.enabled = false;
+				playaudio(0);
 			}
 			break;
 		case State.Falling:
@@ -85,13 +104,14 @@ public class Player : MonoBehaviour {
 				faceforward), Time.deltaTime * camturnspeed);
 			if (transform.position.y < (groundlevel + 3F)) {
 				Debug.Log("Died");
+				playaudio(-1);
 				state = State.Dead;
 				Inventory.Instance().Fade(false);
 				FPController.enabled = true;
 			}
 			break;
 		case State.Flying:
-			rbody.transform.position = usingItem.transform.position + Vector3.down;
+			rbody.transform.position = usingItem.transform.position;
 			transform.rotation = Quaternion.Slerp(transform.rotation, usingItem.transform.rotation, Time.deltaTime * camturnspeed);
 			if (transform.position.y < (groundlevel + 1F)) {
 				Debug.Log("Landed");
@@ -110,6 +130,7 @@ public class Player : MonoBehaviour {
 	{
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 3.0F)) {
+			Debug.Log("Ray hit " + hit.collider.gameObject.name);
 			return Inventory.ItemFromGameObject(hit.collider.gameObject);
 		}
 		return null;

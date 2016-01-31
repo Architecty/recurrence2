@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class parachute : MonoBehaviour {
-	public float forwardspeed =  5F;
+	public float forwardspeed =  3F;
 	public float downspeed = 3F;
 	// Use this for initialization
 	void Start () {
