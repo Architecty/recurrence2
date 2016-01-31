@@ -58,7 +58,7 @@ public class Player : MonoBehaviour {
 			if (it2.type == Item.Type.Test) {
 				playaudio(3);
 				GameObject.Instantiate(paperplane, it2.transform.position, it2.transform.rotation);
-				Destroy(it2);
+				Destroy(it2.gameObject);
 				return true;
 			}
 		}
