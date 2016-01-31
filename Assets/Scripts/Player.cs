@@ -28,6 +28,7 @@ public class Player : MonoBehaviour {
 	public bool[] soundloops;
 
 	private Vector3 faceforward;
+	private float deathtime;
 
 	public static Player GetPlayer()
 	{
@@ -39,6 +40,7 @@ public class Player : MonoBehaviour {
 		if ((rbody == null)&&(FPController != null)) {
 			rbody = FPController.gameObject.GetComponent<Rigidbody>();
 		}
+		Inventory.Instance().Fade(true);
 	}
 
 	public bool useItem(Item item, int idx)
@@ -80,8 +82,10 @@ public class Player : MonoBehaviour {
 	void playaudio(int clipidx)
 	{
 		AudioSource audio = GetComponent<AudioSource>();
-		if (clipidx < 0)
+		if (clipidx < 0) {
 			audio.Stop();
+			return;
+		}
 		audio.clip = sounds[clipidx];
 		audio.loop = soundloops[clipidx];
 		audio.Play();
@@ -103,11 +107,7 @@ public class Player : MonoBehaviour {
 			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.down,
 				faceforward), Time.deltaTime * camturnspeed);
 			if (transform.position.y < (groundlevel + 3F)) {
-				Debug.Log("Died");
-				playaudio(-1);
-				state = State.Dead;
-				Inventory.Instance().Fade(false);
-				FPController.enabled = true;
+				Die();
 			}
 			break;
 		case State.Flying:
@@ -120,6 +120,10 @@ public class Player : MonoBehaviour {
 				Inventory.Instance().RemoveItem(usingItem);
 				Destroy(usingItem);
 			}
+			break;
+		case State.Dead:
+			if (Time.time - deathtime > 5F)
+				ToEnd();
 			break;
 		default:
 			break;
@@ -134,6 +138,24 @@ public class Player : MonoBehaviour {
 			return Inventory.ItemFromGameObject(hit.collider.gameObject);
 		}
 		return null;
+	}
+
+	public void Die()
+	{
+		Debug.Log("Died");
+		playaudio(-1);
+		state = State.Dead;
+		Inventory.Instance().Fade(false);
+		FPController.enabled = true;
+		deathtime = Time.time;
+	}
+
+	public void ToEnd()
+	{
+		state = State.None;
+		Debug.Log("The End ...?");
+		tileManager tm = tileManager.Instance();
+		tm.failedLevel();
 	}
 	
 	// Update is called once per frame
